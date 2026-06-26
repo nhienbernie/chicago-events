@@ -96,4 +96,10 @@ async function syncAllEvents() {
   console.log(`Sync complete. ${events.length} events upserted.`)
 }
 
-syncAllEvents().then(() => process.exit(0))
+
+// Run directly: node jobs/syncEvents.js
+if (require.main === module) {
+  syncAllEvents().then(() => process.exit(0))
+}
+
+module.exports = { syncAllEvents }
