@@ -66,7 +66,10 @@ async function fetchTicketmaster() {
   return events
 }
 
+
 async function syncAllEvents() {
+  console.log('Starting sync...')
+
   console.log('Starting sync...')
 
   const events = await fetchTicketmaster()
