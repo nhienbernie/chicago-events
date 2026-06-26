@@ -1,9 +1,124 @@
 const express = require('express')
 const router = express.Router()
+const supabase = require('../lib/supabase')
 
-// Placeholder — real queries come after Supabase is set up
-router.get('/', (req, res) => {
-  res.json({ events: [], message: 'Events route working' })
+// GET /api/events
+router.get('/', async (req, res) => {
+  try {
+    const {
+      category,
+      lat = 41.8781,
+      lng = -87.6298,
+      radius_km = 10,
+      max_price,
+      is_free,
+      limit = 50,
+      offset = 0
+    } = req.query
+
+    let { data, error } = await supabase.rpc('get_events_within_radius', {
+      user_lat: parseFloat(lat),
+      user_lng: parseFloat(lng),
+      radius_meters: parseFloat(radius_km) * 1000,
+      result_limit: parseInt(limit),
+      result_offset: parseInt(offset)
+    })
+
+    if (error) throw error
+
+    // Apply additional filters
+    if (category) data = data.filter(e => e.category === category)
+    if (is_free === 'true') data = data.filter(e => e.is_free)
+    if (max_price) data = data.filter(e => e.price <= parseFloat(max_price))
+
+    res.json({ events: data, count: data.length })
+  } catch (err) {
+    console.error('GET /api/events error:', err.message)
+    res.status(500).json({ error: 'Failed to fetch events' })
+  }
+})
+
+// GET /api/events/:id
+router.get('/:id', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .select('*')
+      .eq('id', req.params.id)
+      .single()
+
+    if (error) throw error
+    if (!data) return res.status(404).json({ error: 'Event not found' })
+
+    res.json({ event: data })
+  } catch (err) {
+    console.error('GET /api/events/:id error:', err.message)
+    res.status(500).json({ error: 'Failed to fetch event' })
+  }
+})
+
+// POST /api/events
+router.post('/', async (req, res) => {
+  try {
+    const {
+      title,
+      description,
+      category,
+      date,
+      location_name,
+      lat,
+      lng,
+      price,
+      is_free,
+      photo_url,
+      official_url,
+      contact_phone,
+      contact_whatsapp,
+      contact_social,
+      posted_by
+    } = req.body
+
+    // Validate required fields
+    if (!title || !category || !lat || !lng) {
+      return res.status(400).json({ error: 'Missing required fields: title, category, location' })
+    }
+
+    // Validate at least one contact method
+    if (!official_url && !contact_phone && !contact_whatsapp && !contact_social) {
+      return res.status(400).json({ error: 'At least one contact method is required' })
+    }
+
+    const { data, error } = await supabase
+      .from('events')
+      .insert({
+        title,
+        description,
+        category,
+        date,
+        location_name,
+        lat: parseFloat(lat),
+        lng: parseFloat(lng),
+        price: is_free ? 0 : parseFloat(price) || 0,
+        is_free: Boolean(is_free),
+        photo_url,
+        official_url,
+        contact_phone,
+        contact_whatsapp,
+        contact_social,
+        posted_by,
+        source: 'user',
+        is_user_generated: true
+      })
+      .select()
+      .single()
+
+    if (error) throw error
+
+    res.status(201).json({ event: data })
+  } catch (err) {
+    console.error('POST /api/events error:', err.message)
+    res.status(500).json({ error: 'Failed to create event' })
+  }
 })
 
 module.exports = router
