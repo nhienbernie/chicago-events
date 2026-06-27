@@ -35,4 +35,4 @@ app.listen(PORT, () => {
 })
 
 module.exports = app
-const { syncAllEvents } = require('./jobs/syncEvents')
+//const { syncAllEvents } = require('./jobs/syncEvents')
