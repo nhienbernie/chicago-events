@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { supabase } from '../lib/supabase'
+import { supabase } from '@/lib/supabase'
+import { User } from '@supabase/supabase-js'
 
 export default function Navbar() {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -25,11 +26,9 @@ export default function Navbar() {
     const email = prompt('Enter your email:')
     const password = prompt('Enter your password:')
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
+    if (!email || !password) return
 
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) alert(error.message)
   }
 
@@ -37,11 +36,9 @@ export default function Navbar() {
     const email = prompt('Enter your email:')
     const password = prompt('Enter your password:')
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password
-    })
+    if (!email || !password) return
 
+    const { error } = await supabase.auth.signUp({ email, password })
     if (error) alert(error.message)
     else alert('Check your email to confirm your account!')
   }
