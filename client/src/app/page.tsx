@@ -10,12 +10,17 @@ export default function Home() {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
   const [price, setPrice] = useState('')
+  const [dateFilter, setDateFilter] = useState('')
 
   useEffect(() => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
     const params = new URLSearchParams()
     if (category) params.set('category', category)
     params.set('limit', '20')
-    params.set('radius_km', '50')
+    params.set('radius_km', '100')
+    params.set('start_date', today.toISOString())
 
     fetch(`http://localhost:4000/api/events?${params}`)
       .then(res => res.json())
@@ -32,7 +37,40 @@ export default function Home() {
       price === '' ? true :
       price === 'free' ? e.is_free :
       e.price <= parseFloat(price)
-    return matchesSearch && matchesPrice
+
+    const matchesDate = (() => {
+      if (!dateFilter || !e.date) return true
+      const eventDate = new Date(e.date)
+      const now = new Date()
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      const tomorrow = new Date(today)
+      tomorrow.setDate(today.getDate() + 1)
+
+      if (dateFilter === 'today') {
+        return eventDate >= today && eventDate < tomorrow
+      }
+      if (dateFilter === 'weekend') {
+        const day = today.getDay()
+        const saturday = new Date(today)
+        saturday.setDate(today.getDate() + (6 - day))
+        const monday = new Date(saturday)
+        monday.setDate(saturday.getDate() + 2)
+        return eventDate >= saturday && eventDate < monday
+      }
+      if (dateFilter === 'week') {
+        const nextWeek = new Date(today)
+        nextWeek.setDate(today.getDate() + 7)
+        return eventDate >= today && eventDate < nextWeek
+      }
+      if (dateFilter === 'month') {
+        const nextMonth = new Date(today)
+        nextMonth.setMonth(today.getMonth() + 1)
+        return eventDate >= today && eventDate < nextMonth
+      }
+      return true
+    })()
+
+    return matchesSearch && matchesPrice && matchesDate
   })
 
   return (
@@ -44,15 +82,15 @@ export default function Home() {
         setCategory={setCategory}
         price={price}
         setPrice={setPrice}
+        dateFilter={dateFilter}
+        setDateFilter={setDateFilter}
       />
 
-      {/* Header */}
       <div className="max-w-7xl mx-auto px-4 pt-8 pb-4">
         <h1 className="text-4xl font-bold text-gray-900">Chicago Events</h1>
         <p className="text-gray-500 mt-1">Browse Chicago events by category, location, and price. Post your own.</p>
       </div>
 
-      {/* Event Grid */}
       <div className="max-w-7xl mx-auto px-4 py-4">
         {loading ? (
           <p className="text-gray-400">Loading events...</p>
