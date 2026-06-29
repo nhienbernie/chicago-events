@@ -3,18 +3,24 @@
 import { useState, useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import EventCard from '@/components/EventCard'
-import SearchBar from '@/components/SearchBar'
 
 export default function Home() {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
+  const [price, setPrice] = useState('')
+  const [dateFilter, setDateFilter] = useState('')
 
   useEffect(() => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
     const params = new URLSearchParams()
     if (category) params.set('category', category)
     params.set('limit', '20')
+    params.set('radius_km', '100')
+    params.set('start_date', today.toISOString())
 
     fetch(`http://localhost:4000/api/events?${params}`)
       .then(res => res.json())
@@ -25,61 +31,73 @@ export default function Home() {
       .catch(() => setLoading(false))
   }, [category])
 
-  const filtered = events.filter((e: any) =>
-    e.title.toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = events.filter((e: any) => {
+    const matchesSearch = e.title.toLowerCase().includes(search.toLowerCase())
+    const matchesPrice =
+      price === '' ? true :
+      price === 'free' ? e.is_free :
+      e.price <= parseFloat(price)
+
+    const matchesDate = (() => {
+      if (!dateFilter || !e.date) return true
+      const eventDate = new Date(e.date)
+      const now = new Date()
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      const tomorrow = new Date(today)
+      tomorrow.setDate(today.getDate() + 1)
+
+      if (dateFilter === 'today') {
+        return eventDate >= today && eventDate < tomorrow
+      }
+      if (dateFilter === 'weekend') {
+        const day = today.getDay()
+        const saturday = new Date(today)
+        saturday.setDate(today.getDate() + (6 - day))
+        const monday = new Date(saturday)
+        monday.setDate(saturday.getDate() + 2)
+        return eventDate >= saturday && eventDate < monday
+      }
+      if (dateFilter === 'week') {
+        const nextWeek = new Date(today)
+        nextWeek.setDate(today.getDate() + 7)
+        return eventDate >= today && eventDate < nextWeek
+      }
+      if (dateFilter === 'month') {
+        const nextMonth = new Date(today)
+        nextMonth.setMonth(today.getMonth() + 1)
+        return eventDate >= today && eventDate < nextMonth
+      }
+      return true
+    })()
+
+    return matchesSearch && matchesPrice && matchesDate
+  })
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar
+        search={search}
+        setSearch={setSearch}
+        category={category}
+        setCategory={setCategory}
+        price={price}
+        setPrice={setPrice}
+        dateFilter={dateFilter}
+        setDateFilter={setDateFilter}
+      />
 
-      {/* Header */}
       <div className="max-w-7xl mx-auto px-4 pt-8 pb-4">
         <h1 className="text-4xl font-bold text-gray-900">Chicago Events</h1>
         <p className="text-gray-500 mt-1">Browse Chicago events by category, location, and price. Post your own.</p>
       </div>
 
-      
-      {/* Search + Filters */}
-      {/*<div className="max-w-7xl mx-auto px-4 py-4 flex flex-wrap gap-3">
-        <input
-          type="text"
-          placeholder="Search events..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="border border-gray-200 rounded-lg px-4 py-2 text-sm flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-        />
-        <select
-          value={category}
-          onChange={e => setCategory(e.target.value)}
-          className="border border-gray-200 rounded-lg px-4 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">All Categories</option>
-          <option value="music">🎵 Music</option>
-          <option value="theatre">🎭 Theatre</option>
-          <option value="sports">⚽ Sports</option>
-          <option value="arts">🎨 Arts</option>
-          <option value="thrifting">🛍️ Thrifting</option>
-          <option value="film">🎬 Film</option>
-        </select>
-      </div>
-      */}
-
-      <SearchBar
-        search={search}
-        setSearch={setSearch}
-        category={category}
-        setCategory={setCategory}
-      />
-
-      {/* Event Grid */}
       <div className="max-w-7xl mx-auto px-4 py-4">
         {loading ? (
           <p className="text-gray-400">Loading events...</p>
         ) : filtered.length === 0 ? (
           <p className="text-gray-400">No events found.</p>
         ) : (
-          <div className="grid grid-cols-5 gap-4">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
             {filtered.map((event: any) => (
               <EventCard key={event.id} event={event} />
             ))}

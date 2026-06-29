@@ -24,7 +24,7 @@ async function fetchTicketmaster() {
             classificationName: cat.keyword,
             radius: 25,
             unit: 'miles',
-            size: 50,
+            size: 100,
             sort: 'date,asc'
           }
         }

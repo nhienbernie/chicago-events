@@ -12,6 +12,7 @@ router.get('/', async (req, res) => {
       radius_km = 10,
       max_price,
       is_free,
+      start_date,
       limit = 50,
       offset = 0
     } = req.query
@@ -30,6 +31,7 @@ router.get('/', async (req, res) => {
     if (category) data = data.filter(e => e.category === category)
     if (is_free === 'true') data = data.filter(e => e.is_free)
     if (max_price) data = data.filter(e => e.price <= parseFloat(max_price))
+      if (start_date) data = data.filter(e => e.date && new Date(e.date) >= new Date(start_date))
 
     res.json({ events: data, count: data.length })
   } catch (err) {

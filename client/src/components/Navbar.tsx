@@ -4,8 +4,27 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
+import SearchBar from '@/components/SearchBar'
 
-export default function Navbar() {
+interface NavbarProps {
+  search: string
+  setSearch: (v: string) => void
+  category: string
+  setCategory: (v: string) => void
+  price: string
+  setPrice: (v: string) => void
+  dateFilter: string
+  setDateFilter: (v: string) => void
+}
+
+
+
+export default function Navbar({
+  search, setSearch,
+  category, setCategory,
+  price, setPrice,
+  dateFilter, setDateFilter
+}: NavbarProps) {
   const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
@@ -53,6 +72,17 @@ export default function Navbar() {
         <Link href="/" className="font-bold text-xl text-blue-600">
           Chicago Events
         </Link>
+
+        <SearchBar
+          search={search}
+          setSearch={setSearch}
+          category={category}
+          setCategory={setCategory}
+          price={price}
+          setPrice={setPrice}
+          dateFilter={dateFilter}
+          setDateFilter={setDateFilter}
+        />
 
         <div className="flex items-center gap-4">
           {user ? (
