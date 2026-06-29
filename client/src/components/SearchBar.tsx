@@ -66,8 +66,8 @@ export default function SearchBar({
         <option value="theatre">🎭 Theatre</option>
         <option value="sports">⚽ Sports</option>
         <option value="arts">🎨 Arts</option>
-        <option value="thrifting">🛍️ Thrifting</option>
-        <option value="film">🎬 Film</option>
+        <option value="cinema">🎬 Cinema</option>
+        <option value="other">📅 Other</option>
       </select>
 
       {/* Price */}
