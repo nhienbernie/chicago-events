@@ -4,8 +4,18 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
+import SearchBar from '@/components/SearchBar'
 
-export default function Navbar() {
+interface NavbarProps {
+  search: string
+  setSearch: (v: string) => void
+  category: string
+  setCategory: (v: string) => void
+  price: string
+  setPrice: (v: string) => void
+}
+
+export default function Navbar({ search, setSearch, category, setCategory, price, setPrice }: NavbarProps) {
   const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
@@ -25,9 +35,7 @@ export default function Navbar() {
   async function handleLogin() {
     const email = prompt('Enter your email:')
     const password = prompt('Enter your password:')
-
     if (!email || !password) return
-
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) alert(error.message)
   }
@@ -35,9 +43,7 @@ export default function Navbar() {
   async function handleSignUp() {
     const email = prompt('Enter your email:')
     const password = prompt('Enter your password:')
-
     if (!email || !password) return
-
     const { error } = await supabase.auth.signUp({ email, password })
     if (error) alert(error.message)
     else alert('Check your email to confirm your account!')
@@ -49,15 +55,27 @@ export default function Navbar() {
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="font-bold text-xl text-blue-600">
+      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-4">
+
+        {/* Logo */}
+        <Link href="/" className="font-bold text-xl text-blue-600 shrink-0">
           Chicago Events
         </Link>
 
-        <div className="flex items-center gap-4">
+        {/* Search bar fills the gap */}
+        <SearchBar
+          search={search}
+          setSearch={setSearch}
+          category={category}
+          setCategory={setCategory}
+          price={price}
+          setPrice={setPrice}
+        />
+
+        {/* Auth buttons */}
+        <div className="flex items-center gap-2 shrink-0">
           {user ? (
             <>
-              <span className="text-sm text-gray-500">{user.email}</span>
               <Link
                 href="/post"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
@@ -72,7 +90,7 @@ export default function Navbar() {
               </button>
             </>
           ) : (
-            <div className="flex gap-2">
+            <>
               <button
                 onClick={handleLogin}
                 className="text-sm text-gray-600 px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-50"
@@ -85,7 +103,7 @@ export default function Navbar() {
               >
                 Sign up
               </button>
-            </div>
+            </>
           )}
         </div>
       </div>
