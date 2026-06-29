@@ -18,7 +18,7 @@ export default function Home() {
 
     const params = new URLSearchParams()
     if (category) params.set('category', category)
-    params.set('limit', '20')
+    params.set('limit', '350')
     params.set('radius_km', '100')
     params.set('start_date', today.toISOString())
 
@@ -73,6 +73,21 @@ export default function Home() {
     return matchesSearch && matchesPrice && matchesDate
   })
 
+  const deduplicated = Object.values(
+  filtered.reduce((acc: any, event: any) => {
+    const key = `${event.title}_${event.location_name}`
+    if (!acc[key]) {
+      acc[key] = { ...event, showCount: 1 }
+    } else {
+      acc[key].showCount++
+      if (event.date && new Date(event.date) < new Date(acc[key].date)) {
+        acc[key] = { ...event, showCount: acc[key].showCount }
+      }
+    }
+    return acc
+  }, {})
+)
+
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar
@@ -94,11 +109,11 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 py-4">
         {loading ? (
           <p className="text-gray-400">Loading events...</p>
-        ) : filtered.length === 0 ? (
+        ) : deduplicated.length === 0 ? (
           <p className="text-gray-400">No events found.</p>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
-            {filtered.map((event: any) => (
+            {(deduplicated as any[]).map((event: any) => (
               <EventCard key={event.id} event={event} />
             ))}
           </div>

@@ -34,6 +34,9 @@ export default function EventCard({ event }: { event: any }) {
       <div className="p-4 flex flex-col gap-2 flex-1">
         <p className="text-xs text-gray-400 uppercase tracking-wide">{event.category}</p>
         <h2 className="font-semibold text-gray-900 text-sm leading-snug">{event.title}</h2>
+        {event.showCount > 1 && (
+          <p className="text-xs text-blue-500 font-medium">{event.showCount} showtimes available</p>
+        )}
         <p className="text-sm text-gray-500">📅 {formattedDate}</p>
         <p className="text-sm text-gray-500">📍 {event.location_name || 'Chicago'}</p>
         <div className="mt-auto pt-2 flex items-center justify-between">
