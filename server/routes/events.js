@@ -81,7 +81,7 @@ router.post('/', async (req, res) => {
     } = req.body
 
     // Validate required fields
-    if (!title || !category || !lat || !lng) {
+    if (!title || !category /*|| !lat || !lng*/) {
       return res.status(400).json({ error: 'Missing required fields: title, category, location' })
     }
 
