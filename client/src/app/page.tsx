@@ -38,7 +38,7 @@ export default function Home() {
     params.set('radius_km', '100')
     params.set('start_date', chicagoMidnight.toISOString())
 
-    fetch(`http://localhost:4000/api/events?${params}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events?${params}`)
       .then(res => res.json())
       .then(data => {
         setEvents(data.events || [])

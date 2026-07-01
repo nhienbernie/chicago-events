@@ -21,7 +21,7 @@ export default function EditEventPage() {
 
   useEffect(() => {
     if (!id) return
-    fetch(`http://localhost:4000/api/events/${id}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events/${id}`)
       .then(res => res.json())
       .then(({ event }) => {
         if (!event) { router.push('/'); return }
@@ -47,7 +47,7 @@ export default function EditEventPage() {
   }, [id, router])
 
   async function uploadPhoto(file: File): Promise<string> {
-    const res = await fetch('http://localhost:4000/api/upload/presign', {
+    const res = await fetch('${process.env.NEXT_PUBLIC_API_URL}/api/upload/presign', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fileType: file.type })

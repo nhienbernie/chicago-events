@@ -20,7 +20,7 @@ export default function EventDetailPage() {
       setUser(session?.user ?? null)
     })
 
-    fetch(`http://localhost:4000/api/events/${id}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events/${id}`)
       .then(res => res.json())
       .then(data => {
         setEvent(data.event)

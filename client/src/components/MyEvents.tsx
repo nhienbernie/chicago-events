@@ -10,7 +10,7 @@ export default function MyEvents({ user }: { user: any }) {
 
   useEffect(() => {
     if (!user) return
-    fetch(`http://localhost:4000/api/events/my/${user.id}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events/my/${user.id}`)
       .then(res => res.json())
       .then(data => {
         setEvents(data.events || [])

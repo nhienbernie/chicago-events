@@ -21,7 +21,7 @@ export default function PostEventPage() {
   }, [router])
 
   async function uploadPhoto(file: File): Promise<string> {
-    const res = await fetch('http://localhost:4000/api/upload/presign', {
+    const res = await fetch('${process.env.NEXT_PUBLIC_API_URL}/api/upload/presign', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fileType: file.type })
@@ -43,7 +43,7 @@ export default function PostEventPage() {
       ? new Date(`${values.date}T${values.time}`).toISOString()
       : new Date(values.date).toISOString()
 
-    const res = await fetch('http://localhost:4000/api/events', {
+    const res = await fetch('${process.env.NEXT_PUBLIC_API_URL}/api/events', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
