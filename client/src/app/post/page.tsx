@@ -33,6 +33,9 @@ export default function PostEventPage() {
     contact_social: ''
   })
 
+  const [photoFile, setPhotoFile] = useState<File | null>(null)
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null)
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
@@ -45,6 +48,30 @@ export default function PostEventPage() {
 
   function update(key: string, value: any) {
     setForm(prev => ({ ...prev, [key]: value }))
+  }
+
+  // Handle photo file selection
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setPhotoFile(file)
+    setPhotoPreview(URL.createObjectURL(file))
+  }
+
+  // Upload photo to S3 and return the public URL
+  async function uploadPhoto(file: File): Promise<string> {
+    const res = await fetch('http://localhost:4000/api/upload/presign', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fileType: file.type })
+    })
+    const { presignedUrl, publicUrl } = await res.json()
+    await fetch(presignedUrl, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': file.type }
+    })
+    return publicUrl
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -80,6 +107,11 @@ export default function PostEventPage() {
         ? new Date(`${form.date}T${form.time}`).toISOString()
         : new Date(form.date).toISOString()
 
+      let photo_url = null
+      if (photoFile) {
+        photo_url = await uploadPhoto(photoFile)
+      }
+
       const res = await fetch('http://localhost:4000/api/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -93,6 +125,7 @@ export default function PostEventPage() {
           lng: null,//coords[0],
           price: form.is_free ? 0 : parseFloat(form.price) || 0,
           is_free: form.is_free,
+          photo_url,
           official_url: form.official_url || null,
           contact_phone: form.contact_phone || null,
           contact_whatsapp: form.contact_whatsapp || null,
@@ -226,6 +259,24 @@ export default function PostEventPage() {
               value={form.description}
               onChange={e => update('description', e.target.value)}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            />
+          </div>
+
+          {/* Photo */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Photo <span className="text-gray-400 font-normal">(optional)</span>
+            </label>
+            {photoPreview && (
+              <div className="mb-2 rounded-lg overflow-hidden" style={{ height: '200px' }}>
+                <img src={photoPreview} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handlePhotoChange}
+              className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
             />
           </div>
 
