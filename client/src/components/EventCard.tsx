@@ -24,7 +24,7 @@ export default function EventCard({ event }: { event: any }) {
 
   return (
   <div
-    className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col cursor-pointer"
+    className="bg-white rounded-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col cursor-pointer"
     onClick={() => router.push(`/events/${event.id}`)}
   >
     {/* Thumbnail */}

@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import EventCard from '@/components/EventCard'
+import MyEvents from '@/components/MyEvents'
+import { supabase } from '@/lib/supabase'
 
 export default function Home() {
   const [events, setEvents] = useState([])
@@ -11,6 +13,20 @@ export default function Home() {
   const [category, setCategory] = useState('')
   const [price, setPrice] = useState('')
   const [dateFilter, setDateFilter] = useState('')
+  const [user, setUser] = useState<any>(null)
+
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   useEffect(() => {
     const chicagoDate = new Date().toLocaleDateString('en-US', { timeZone: 'America/Chicago' })
@@ -102,9 +118,11 @@ export default function Home() {
       />
 
       <div className="max-w-7xl mx-auto px-4 pt-8 pb-4">
-        <h1 className="text-4xl font-bold text-gray-900">Chicago Events</h1>
         <p className="text-gray-500 mt-1">Browse Chicago events by category, location, and price. Post your own.</p>
       </div>
+
+      {/* My Events */}
+      <MyEvents user={user} />
 
       <div className="max-w-7xl mx-auto px-4 py-4">
         {loading ? (

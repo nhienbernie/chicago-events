@@ -134,4 +134,23 @@ router.post('/', async (req, res) => {
   }
 })
 
+// GET /api/events/my/:userId
+router.get('/my/:userId', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .select('*')
+      .eq('posted_by', req.params.userId)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+
+    res.json({ events: data })
+  } catch (err) {
+    console.error('GET /api/events/my/:userId error:', err.message)
+    res.status(500).json({ error: 'Failed to fetch your events' })
+  }
+})
+
+
 module.exports = router
