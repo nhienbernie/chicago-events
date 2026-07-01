@@ -27,6 +27,17 @@ router.get('/', async (req, res) => {
 
     if (error) throw error
 
+    // Also get user-generated events with no location
+    const { data: userEvents, error: userError } = await supabase
+      .from('events')
+      .select('*')
+      .eq('is_user_generated', true)
+      .is('lat', null)
+
+    if (!userError && userEvents) {
+      data = [...data, ...userEvents]
+    }
+
     // Apply additional filters
     if (category) data = data.filter(e => e.category === category)
     if (is_free === 'true') data = data.filter(e => e.is_free)

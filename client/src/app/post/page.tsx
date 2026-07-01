@@ -102,6 +102,8 @@ export default function PostEventPage() {
       })
 
       const data = await res.json()
+      //trouble shooting
+      console.log('server response:', data)
       if (!res.ok) throw new Error(data.error)
 
       router.push(`/events/${data.event.id}`)
