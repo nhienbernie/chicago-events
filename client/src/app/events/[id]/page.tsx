@@ -113,16 +113,29 @@ export default function EventDetailPage() {
 
       <div className="max-w-4xl mx-auto px-4 py-6">
 
-        {/* Photo */}
-        {event.photo_url && (
-          <div className="w-full rounded-xl overflow-hidden mb-6" style={{ height: '360px' }}>
+        {/* Photo + pencil icon */}
+        <div className="relative w-full rounded-xl overflow-hidden mb-6" style={{ height: '360px' }}>
+          {event.photo_url ? (
             <img
               src={event.photo_url}
               alt={event.title}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
-          </div>
-        )}
+          ) : (
+            <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+              <span style={{ fontSize: '4rem' }}>📅</span>
+            </div>
+          )}
+
+          {user && event.posted_by === user.id && (
+            <button
+              onClick={() => router.push(`/events/${event.id}/edit`)}
+              className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md hover:bg-gray-50 transition-colors"
+            >
+              ✏️
+            </button>
+          )}
+        </div>
 
         {/* Title + Save */}
         <div className="flex items-start justify-between gap-4 mb-4">
