@@ -13,14 +13,14 @@ export default function Home() {
   const [dateFilter, setDateFilter] = useState('')
 
   useEffect(() => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    const chicagoDate = new Date().toLocaleDateString('en-US', { timeZone: 'America/Chicago' })
+    const chicagoMidnight = new Date(chicagoDate)
 
     const params = new URLSearchParams()
     if (category) params.set('category', category)
     params.set('limit', '350')
     params.set('radius_km', '100')
-    params.set('start_date', today.toISOString())
+    params.set('start_date', chicagoMidnight.toISOString())
 
     fetch(`http://localhost:4000/api/events?${params}`)
       .then(res => res.json())
