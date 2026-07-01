@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 import SearchBar from '@/components/SearchBar'
+import router from 'next/dist/shared/lib/router/router'
 
 interface NavbarProps {
   search: string
@@ -26,7 +28,8 @@ export default function Navbar({
   dateFilter, setDateFilter
 }: NavbarProps) {
   const [user, setUser] = useState<User | null>(null)
-
+  const router = useRouter()
+  
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
@@ -54,12 +57,14 @@ export default function Navbar({
   async function handleSignUp() {
     const email = prompt('Enter your email:')
     const password = prompt('Enter your password:')
-
     if (!email || !password) return
-
     const { error } = await supabase.auth.signUp({ email, password })
-    if (error) alert(error.message)
-    else alert('Check your email to confirm your account!')
+    if (error) {
+      alert(error.message)
+    } else {
+      alert('Check your email to confirm your account!')
+      router.push('/profile/setup')
+    }
   }
 
   async function handleLogout() {

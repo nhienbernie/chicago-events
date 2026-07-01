@@ -13,6 +13,7 @@ export default function EventDetailPage() {
   const [user, setUser] = useState<any>(null)
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [poster, setPoster] = useState<any>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -38,6 +39,16 @@ export default function EventDetailPage() {
       .single()
       .then(({ data }) => setSaved(!!data))
   }, [user, event])
+  
+  useEffect(() => {
+    if (!event?.posted_by) return
+    supabase
+      .from('users')
+      .select('username, org_url')
+      .eq('id', event.posted_by)
+      .single()
+      .then(({ data }) => setPoster(data))
+  }, [event])
 
   async function handleSave() {
     if (!user) {
@@ -160,6 +171,25 @@ export default function EventDetailPage() {
             </span>
           </div>
         </div>
+
+        {/* Poster attribution */}
+      {event.is_user_generated && (
+        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+          <p className="text-sm text-gray-500">Posted by</p>
+          {poster?.org_url ? (
+            <button
+              onClick={() => window.open(poster.org_url, '_blank')}
+              className="text-blue-500 font-medium hover:underline"
+            >
+              {poster?.username ? `@${poster.username}` : 'Community'}
+            </button>
+          ) : (
+            <p className="font-medium text-gray-900">
+              {poster?.username ? `@${poster.username}` : 'Community'}
+            </p>
+          )}
+        </div>
+      )}
 
         {/* Description */}
         {event.description && (
