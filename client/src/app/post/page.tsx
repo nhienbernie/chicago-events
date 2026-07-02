@@ -26,10 +26,6 @@ export default function PostEventPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fileType: file.type })
     })
-    
-    /*trouble shooting presigned URL upload*/
-    //const text = await res.text()
-    //console.log('presign response:', text)
 
     const { presignedUrl, publicUrl } = await res.json()
     await fetch(presignedUrl, {
@@ -72,7 +68,9 @@ export default function PostEventPage() {
 
     const data = await res.json()
     if (!res.ok) throw new Error(data.error)
-    router.push(`/events/${data.event.id}`)
+    //router.push(`/events/${data.event.id}`)
+    router.push(`/`)
+
   }
 
   return (

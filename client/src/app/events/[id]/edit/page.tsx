@@ -91,7 +91,9 @@ export default function EditEventPage() {
       .eq('posted_by', user.id)
 
     if (error) throw error
-    router.push(`/events/${id}`)
+    //router.push(`/events/${id}`)
+    router.push(`/`)
+
   }
 
   async function handleDelete() {
