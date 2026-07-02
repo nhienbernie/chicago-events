@@ -47,6 +47,7 @@ export default function EditEventPage() {
   }, [id, router])
 
   async function uploadPhoto(file: File): Promise<string> {
+    //console.log('API URL:', process.env.NEXT_PUBLIC_API_URL)
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload/presign`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -62,6 +63,7 @@ export default function EditEventPage() {
   }
 
   async function handleSubmit(values: EventFormValues, photoFile: File | null) {
+    //console.log('date:', values.date, 'time:', values.time)
     let photo_url = values.photo_url
     if (photoFile) photo_url = await uploadPhoto(photoFile)
 

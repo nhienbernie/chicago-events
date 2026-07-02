@@ -78,6 +78,7 @@ export default function EventForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    console.log('photoFile:', photoFile)
     setLocalError('')
 
     if (!form.official_url && !form.contact_phone && !form.contact_whatsapp && !form.contact_social) {

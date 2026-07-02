@@ -36,7 +36,7 @@ export default function EventDetailPage() {
       .select('id')
       .eq('user_id', user.id)
       .eq('event_id', event.id)
-      .single()
+      .maybeSingle()
       .then(({ data }) => setSaved(!!data))
   }, [user, event])
   
