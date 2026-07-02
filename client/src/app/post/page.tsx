@@ -43,7 +43,7 @@ export default function PostEventPage() {
       ? new Date(`${values.date}T${values.time}`).toISOString()
       : new Date(values.date).toISOString()
 
-    const res = await fetch('${process.env.NEXT_PUBLIC_API_URL}/api/events', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

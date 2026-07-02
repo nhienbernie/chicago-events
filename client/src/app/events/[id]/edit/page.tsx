@@ -47,7 +47,7 @@ export default function EditEventPage() {
   }, [id, router])
 
   async function uploadPhoto(file: File): Promise<string> {
-    const res = await fetch('${process.env.NEXT_PUBLIC_API_URL}/api/upload/presign', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload/presign`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fileType: file.type })
