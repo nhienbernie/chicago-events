@@ -21,11 +21,16 @@ export default function PostEventPage() {
   }, [router])
 
   async function uploadPhoto(file: File): Promise<string> {
-    const res = await fetch('${process.env.NEXT_PUBLIC_API_URL}/api/upload/presign', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload/presign`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fileType: file.type })
     })
+    
+    /*trouble shooting presigned URL upload*/
+    //const text = await res.text()
+    //console.log('presign response:', text)
+
     const { presignedUrl, publicUrl } = await res.json()
     await fetch(presignedUrl, {
       method: 'PUT',
