@@ -92,13 +92,20 @@ export default function Navbar({
         <div className="flex items-center gap-4">
           {user ? (
             <>
-              <span className="text-sm text-gray-500">{user.email}</span>
+              <Link
+                  href="/profile"
+                  className="text-sm text-gray-500 hover:text-gray-700"
+                >
+                  My Profile
+              </Link>
+              
               <Link
                 href="/post"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
               >
                 + Post Event
               </Link>
+
               <button
                 onClick={handleLogout}
                 className="text-sm text-gray-500 hover:text-gray-700"
