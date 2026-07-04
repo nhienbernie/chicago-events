@@ -1,0 +1,15 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  health-check:
+    name: Server Health Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check server is live
+        run: curl --fail https://chicago-events-production.up.railway.app/api/health
