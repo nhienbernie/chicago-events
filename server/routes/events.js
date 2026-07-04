@@ -60,8 +60,9 @@ router.get('/:id', async (req, res) => {
       .eq('id', req.params.id)
       .single()
 
-    if (error) throw error
-    if (!data) return res.status(404).json({ error: 'Event not found' })
+    //if (error) throw error
+    if (error && error.code !== 'PGRST116') throw error
+    if (!data) return res.status(404).json({ error: 'This event may have expired or no longer exists.' })
 
     res.json({ event: data })
   } catch (err) {
