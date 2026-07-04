@@ -42,9 +42,17 @@ router.get('/', async (req, res) => {
     if (category) data = data.filter(e => e.category === category)
     if (is_free === 'true') data = data.filter(e => e.is_free)
     if (max_price) data = data.filter(e => e.price <= parseFloat(max_price))
-      if (start_date) data = data.filter(e => e.date && new Date(e.date) >= new Date(start_date))
+    if (start_date) data = data.filter(e => e.date && new Date(e.date) >= new Date(start_date))
 
-    res.json({ events: data, count: data.length })
+    console.log('BEFORE COUNT QUERY')
+     
+    const { count: totalCount } = await supabase
+      .from('events')
+      .select('*', { count: 'exact', head: true })
+
+    console.log('total count:', totalCount)
+    res.json({ events: data, count: data.length, total: totalCount || 0 })
+      
   } catch (err) {
     console.error('GET /api/events error:', err.message)
     res.status(500).json({ error: 'Failed to fetch events' })

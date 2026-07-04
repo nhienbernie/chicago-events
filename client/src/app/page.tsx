@@ -15,6 +15,12 @@ export default function Home() {
   const [dateFilter, setDateFilter] = useState('')
   const [user, setUser] = useState<any>(null)
 
+  /*page state*/
+  const [page, setPage] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
+  const EVENTS_PER_PAGE = 10
+  
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -29,23 +35,31 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
+    setLoading(true)
     const chicagoDate = new Date().toLocaleDateString('en-US', { timeZone: 'America/Chicago' })
     const chicagoMidnight = new Date(chicagoDate)
 
     const params = new URLSearchParams()
     if (category) params.set('category', category)
-    params.set('limit', '350')
+    params.set('limit', EVENTS_PER_PAGE.toString())
+    params.set('offset', ((page - 1) * EVENTS_PER_PAGE).toString())
     params.set('radius_km', '100')
-    params.set('start_date', chicagoMidnight.toISOString())
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events?${params}`)
       .then(res => res.json())
       .then(data => {
+        console.log('total from API:', data.total)
         setEvents(data.events || [])
+        setTotalCount(data.total || 0)
         setLoading(false)
       })
       .catch(() => setLoading(false))
-  }, [category])
+  }, [category, page])
+
+  useEffect(() => {
+    setPage(1)
+  }, [category, search, price, dateFilter])
+
 
   const filtered = events.filter((e: any) => {
     const matchesSearch = e.title.toLowerCase().includes(search.toLowerCase()) || 
@@ -140,6 +154,29 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {!loading && totalCount > EVENTS_PER_PAGE && (
+        <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-center gap-4">
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            ← Previous
+          </button>
+          <span className="text-sm text-gray-500">
+            Page {page} of {Math.ceil(totalCount / EVENTS_PER_PAGE)}
+          </span>
+          <button
+            onClick={() => setPage(p => p + 1)}
+            disabled={page >= Math.ceil(totalCount / EVENTS_PER_PAGE)}
+            className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Next →
+          </button>
+        </div>
+      )}
     </main>
   )
 }
