@@ -48,7 +48,10 @@ export default function Home() {
   }, [category])
 
   const filtered = events.filter((e: any) => {
-    const matchesSearch = e.title.toLowerCase().includes(search.toLowerCase())
+    const matchesSearch = e.title.toLowerCase().includes(search.toLowerCase()) || 
+    e.location_name?.toLowerCase().includes(search.toLowerCase()) ||
+    e.description?.toLowerCase().includes(search.toLowerCase())
+    
     const matchesPrice =
       price === '' ? true :
       price === 'free' ? e.is_free :
