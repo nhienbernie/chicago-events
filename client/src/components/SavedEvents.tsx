@@ -28,7 +28,7 @@ export default function SavedEvents({ user }: { user: any }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-4">
-      <h2 className="text-lg font-semibold text-gray-900 pb-2  border-b-2 border-gray-200 mb-3">Saved Events</h2>
+      <h2 className="text-lg font-semibold text-gray-900 mb-3">Saved Events</h2>
       {events.length === 0 ? (
         <div className="bg-gray-50 rounded-xl p-8 text-center">
           <p className="text-gray-400">No saved events yet.</p>

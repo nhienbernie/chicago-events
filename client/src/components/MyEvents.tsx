@@ -25,7 +25,7 @@ export default function MyEvents({ user }: { user: any }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-4">
-      <h2 className="text-lg font-semibold text-gray-900 pb-2 border-b-2 border-gray-200 mb-3">My Events</h2>
+      <h2 className="text-lg font-semibold text-gray-900 mb-3">My Events</h2>
       <div className="bg-blue-50 rounded-l p-4">
         <div className="grid grid-cols-5 gap-4">
           {events.map(event => (
