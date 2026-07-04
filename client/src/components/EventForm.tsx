@@ -25,6 +25,7 @@ export interface EventFormValues {
   contact_whatsapp: string
   contact_social: string
   photo_url: string
+  showtimes: string[]
 }
 
 export const defaultValues: EventFormValues = {
@@ -40,7 +41,8 @@ export const defaultValues: EventFormValues = {
   contact_phone: '',
   contact_whatsapp: '',
   contact_social: '',
-  photo_url: ''
+  photo_url: '',
+  showtimes: []
 }
 
 interface EventFormProps {
@@ -162,6 +164,48 @@ export default function EventForm({
           />
         </div>
       </div>
+
+      {/* Additional Showtimes */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Additional Showtimes <span className="text-gray-400 font-normal">(optional)</span>
+        </label>
+        {form.showtimes.map((showtime, index) => (
+          <div key={index} className="flex gap-2 mb-2">
+            <input
+              type="datetime-local"
+              value={showtime}
+              onChange={e => {
+                const updated = [...form.showtimes]
+                updated[index] = e.target.value
+                update('showtimes', updated)
+              }}
+              className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const updated = form.showtimes.filter((_, i) => i !== index)
+                update('showtimes', updated)
+              }}
+              className="px-3 py-2 text-red-400 hover:text-red-600 text-sm"
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() => update('showtimes', [...form.showtimes, ''])}
+          className="text-sm text-blue-500 hover:text-blue-700"
+        >
+          + Add showtime
+        </button>
+      </div>
+
+
+
+
 
       {/* Location */}
       <div>

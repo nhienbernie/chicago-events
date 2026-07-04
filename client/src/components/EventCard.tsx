@@ -44,7 +44,12 @@ export default function EventCard({ event }: { event: any }) {
       {event.showCount > 1 && (
         <p className="text-xs text-blue-500 font-medium">{event.showCount} showtimes available</p>
       )}
+      
       <p className="text-sm text-gray-500">📅 {formattedDate}</p>
+      {event.showtimes && event.showtimes.length > 1 && (
+        <p className="text-xs text-blue-500 font-medium">+{event.showtimes.length - 1} more showtimes</p>
+      )}
+
       <p className="text-sm text-gray-500">📍 {event.location_name || 'Chicago'}</p>
       <div className="mt-auto pt-2 flex items-center justify-between">
         <span className={`text-sm font-semibold ${event.is_free ? 'text-green-600' : 'text-gray-700'}`}>

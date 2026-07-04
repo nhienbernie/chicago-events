@@ -89,8 +89,12 @@ router.post('/', async (req, res) => {
       contact_phone,
       contact_whatsapp,
       contact_social,
-      posted_by
+      posted_by,
+      showtimes
     } = req.body
+
+    console.log('showtimes received:', showtimes)
+
 
     // Validate required fields
     if (!title || !category /*|| !lat || !lng*/) {
@@ -121,7 +125,8 @@ router.post('/', async (req, res) => {
         contact_social,
         posted_by,
         source: 'user',
-        is_user_generated: true
+        is_user_generated: true,
+        showtimes: showtimes || null
       })
       .select()
       .single()

@@ -52,6 +52,9 @@ export default function PostEventPage() {
         description: values.description,
         category: values.category,
         date: dateTime,
+        showtimes: values.showtimes.length > 0 
+          ? [dateTime, ...values.showtimes.map(s => new Date(s).toISOString())]
+          : null,
         location_name: values.location_name,
         lat: 41.8781,
         lng: -87.6298,

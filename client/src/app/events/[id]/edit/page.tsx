@@ -39,7 +39,8 @@ export default function EditEventPage() {
           contact_phone: event.contact_phone || '',
           contact_whatsapp: event.contact_whatsapp || '',
           contact_social: event.contact_social || '',
-          photo_url: event.photo_url || ''
+          photo_url: event.photo_url || '',
+          showtimes: event.showtimes || [] 
         })
         setLoading(false)
       })

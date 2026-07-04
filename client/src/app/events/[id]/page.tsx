@@ -163,6 +163,24 @@ export default function EventDetailPage() {
             <span>{formattedDate}</span>
           </div>
 
+          {/* Showtimes */}
+          {event.showtimes && event.showtimes.length > 1 && (
+            <div className="flex flex-col gap-1">
+              <p className="text-sm font-medium text-gray-700">All Showtimes:</p>
+              {event.showtimes.map((showtime: string, index: number) => (
+                <p key={index} className="text-sm text-gray-500 pl-4">
+                  • {new Date(showtime).toLocaleDateString('en-US', {
+                      weekday: 'short',
+                      month: 'short',
+                      day: 'numeric',
+                      hour: 'numeric',
+                      minute: '2-digit'
+                    })}
+                </p>
+              ))}
+            </div>
+          )}
+
           <div className="flex items-center gap-2">
             <span>📍</span>
             {mapsUrl ? (
