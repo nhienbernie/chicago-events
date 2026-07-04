@@ -12,11 +12,13 @@ export default function EventCard({ event }: { event: any }) {
       })
     : 'Recurring'
 
-  const priceLabel = event.is_free
+  const priceLabel = event.is_free === true
     ? 'Free'
+    : event.price && event.price_max && event.price !== event.price_max
+    ? `$${event.price}–$${event.price_max}`
     : event.price
     ? `From $${event.price}`
-    : 'See event'
+    : 'See tickets'
 
   const mapsUrl = event?.location_name
     ? `https://maps.google.com/maps?q=${encodeURIComponent(event.location_name + ' Chicago IL')}`
