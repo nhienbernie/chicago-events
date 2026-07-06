@@ -33,6 +33,7 @@ router.get('/', async (req, res) => {
       .select('*')
       .eq('is_user_generated', true)
       .is('lat', null)
+      .or('date.is.null,date.gte.' + new Date().toISOString())
 
     if (!userError && userEvents) {
       data = [...data, ...userEvents]
