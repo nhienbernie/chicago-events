@@ -20,13 +20,15 @@ export default function EventCard({ event }: { event: any }) {
     ? `From $${event.price}`
     : 'See tickets'
 
+  const isExpired = event.date && new Date(event.date) < new Date()
+
   const mapsUrl = event?.location_name
     ? `https://maps.google.com/maps?q=${encodeURIComponent(event.location_name + ' Chicago IL')}`
     : null
 
   return (
   <div
-    className="bg-white rounded-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col cursor-pointer"
+    className={`bg-white rounded-md border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col cursor-pointer ${isExpired ? 'opacity-50 grayscale' : ''}`}
     onClick={() => router.push(`/events/${event.id}`)}
   >
     {/* Thumbnail */}
@@ -40,6 +42,9 @@ export default function EventCard({ event }: { event: any }) {
     {/* Info */}
     <div className="p-4 flex flex-col gap-2 flex-1">
       <p className="text-xs text-gray-400 uppercase tracking-wide">{event.category}</p>
+      {isExpired && (
+        <span className="text-xs text-red-400 font-medium">Expired</span>
+      )}
       <h2 className="font-semibold text-gray-900 text-sm leading-snug">{event.title}</h2>
       {event.showCount > 1 && (
         <p className="text-xs text-blue-500 font-medium">{event.showCount} showtimes available</p>
