@@ -108,7 +108,7 @@ export default function Home() {
 )
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen" style={{ backgroundColor: '#F8F6F1' }}>
       <Navbar
         search={search}
         setSearch={setSearch}
@@ -121,13 +121,14 @@ export default function Home() {
       />
 
       <div className="max-w-7xl mx-auto px-4 pt-8 pb-4">
-        <p className="text-gray-500 mt-1">Browse Chicago events by category, location, and price. Post your own.</p>
+        <p style={{ color: '#6B6B6B' }} className="mt-1">Browse Chicago events by category, location, and price. Post your own.</p>
       </div>
 
       {/* My Events */}
       <MyEvents user={user} />
 
       <div className="max-w-7xl mx-auto px-4 py-4">
+        <h2 className="text-lg font-semibold text-gray-900 pb-2 border-b-2 border-gray-300 mb-4">Explore Events</h2>
         {loading ? (
           <p className="text-gray-400">Loading events...</p>
         ) : deduplicated.length === 0 ? (

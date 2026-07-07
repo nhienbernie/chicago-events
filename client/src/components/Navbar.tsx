@@ -72,9 +72,9 @@ export default function Navbar({
   }
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="font-bold text-xl text-blue-600">
+    <nav style={{ backgroundColor: '#1A1A2E' }} className="sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-4">
+        <Link href="/" style={{ color: '#E8A838' }} className="font-bold text-xl shrink-0">
           Chicago Events
         </Link>
 
@@ -117,13 +117,15 @@ export default function Navbar({
             <div className="flex gap-2">
               <button
                 onClick={handleLogin}
-                className="text-sm text-gray-600 px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-50"
+                style={{ color: 'white', border: '1px solid rgba(255,255,255,0.3)' }}
+                className="text-sm px-4 py-2 rounded-lg hover:bg-white/10"
               >
                 Sign in
               </button>
               <button
                 onClick={handleSignUp}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                style={{ color: 'white', border: '1px solid rgba(255,255,255,0.3)' }}
+                className="text-sm px-4 py-2 rounded-lg hover:bg-white/10"
               >
                 Sign up
               </button>
