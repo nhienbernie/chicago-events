@@ -11,9 +11,11 @@ const config: Config = {
         amber: '#E8A838',
         warm: '#F8F6F1',
       },
+
       fontFamily: {
         sans: ['var(--font-inter)', 'sans-serif'],
         display: ['var(--font-playfair)', 'serif'],
+        montserrat: ['var(--font-montserrat)', 'sans-serif'],
       },
     },
   },

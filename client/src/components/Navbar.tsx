@@ -72,9 +72,9 @@ export default function Navbar({
   }
 
   return (
-    <nav style={{ backgroundColor: '#1A1A2E' }} className="sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-4">
-        <Link href="/" style={{ color: '#E8A838' }} className="font-bold text-xl shrink-0">
+    <nav style={{ background: 'linear-gradient(135deg, #0D1B4B 0%, #1E3AFF 60%, #6B3FD4 100%)' }} className="sticky top-0 z-50">
+      <div className="w-full px-8 h-20 flex items-center gap-4">
+        <Link href="/" style={{ color: '#F5F0E8', fontFamily: 'var(--font-playfair), serif', fontSize: '1.75rem' }} className="font-bold shrink-0">
           Chicago Events
         </Link>
 
@@ -101,7 +101,14 @@ export default function Navbar({
               
               <Link
                 href="/post"
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-colors"
+                style={{ 
+                  backgroundColor: '#D94F2B', 
+                  color: '#FFFFFF', 
+                  border: '3px solid #F0A500',
+                  fontWeight: 700,
+                  fontFamily: 'var(--font-montserrat), sans-serif'
+                }}
               >
                 + Post Event
               </Link>
@@ -117,15 +124,21 @@ export default function Navbar({
             <div className="flex gap-2">
               <button
                 onClick={handleLogin}
-                style={{ color: 'white', border: '1px solid rgba(255,255,255,0.3)' }}
-                className="text-sm px-4 py-2 rounded-lg hover:bg-white/10"
+                style={{ backgroundColor: '#D94F2B', color: '#F5F0E8' }}
+                className="px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-colors"
               >
                 Sign in
               </button>
               <button
                 onClick={handleSignUp}
-                style={{ color: 'white', border: '1px solid rgba(255,255,255,0.3)' }}
-                className="text-sm px-4 py-2 rounded-lg hover:bg-white/10"
+                style={{ 
+                  backgroundColor: '#D94F2B', 
+                  color: '#FFFFFF', 
+                  border: '3px solid #F0A500',
+                  fontWeight: 600,
+                  fontFamily: 'var(--font-montserrat), serif'
+                }}
+                className="text-sm px-4 py-2 rounded-lg hover:bg-white/10"          
               >
                 Sign up
               </button>

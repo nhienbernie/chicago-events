@@ -25,9 +25,9 @@ export default function MyEvents({ user }: { user: any }) {
 
   return (
   <div className="max-w-7xl mx-auto px-4 py-4">
-    <div className="bg-blue-50 rounded-xl p-4">
-      <h2 className="text-lg font-semibold text-gray-900 pb-2 border-b-2 border-gray-300 mb-2">My Events</h2>
-      <div className="grid grid-cols-5 gap-4">
+    <div>
+      <h2 className="text-2xl font-bold pb-3 border-b-2 border-gray-300 mb-4" style={{ color: '#1A1A2E', fontFamily: 'var(--font-playfair), serif' }}>My Events</h2>
+      <div className="grid grid-cols-5 gap-6">
         {events.map(event => (
           <EventCard key={event.id} event={event} />
         ))}

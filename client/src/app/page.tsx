@@ -108,7 +108,7 @@ export default function Home() {
 )
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: '#F8F6F1' }}>
+    <main className="min-h-screen" style={{ backgroundColor: '#F5F0E8' }}>
       <Navbar
         search={search}
         setSearch={setSearch}
@@ -128,13 +128,13 @@ export default function Home() {
       <MyEvents user={user} />
 
       <div className="max-w-7xl mx-auto px-4 py-4">
-        <h2 className="text-lg font-semibold text-gray-900 pb-2 border-b-2 border-gray-300 mb-4">Explore Events</h2>
+        <h2 className="text-2xl font-bold pb-3 border-b-2 border-gray-300 mb-4" style={{ color: '#1A1A2E', fontFamily: 'var(--font-playfair), serif' }}>Explore Events</h2>
         {loading ? (
           <p className="text-gray-400">Loading events...</p>
         ) : deduplicated.length === 0 ? (
           <p className="text-gray-400">No events found.</p>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
             {(deduplicated as any[]).map((event: any) => (
               <EventCard key={event.id} event={event} />
             ))}
