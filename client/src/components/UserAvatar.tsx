@@ -1,6 +1,7 @@
 interface UserAvatarProps {
   username?: string | null
   displayName?: string | null
+  avatarUrl?: string | null
   size?: 'sm' | 'md' | 'lg'
 }
 
@@ -18,7 +19,7 @@ function getColor(name: string) {
   return COLORS[index]
 }
 
-export default function UserAvatar({ username, displayName, size = 'md' }: UserAvatarProps) {
+export default function UserAvatar({ username, displayName, avatarUrl, size = 'md' }: UserAvatarProps) {
   const name = username || displayName || '?'
   const initial = name.charAt(0).toUpperCase()
   const color = getColor(name)
@@ -27,6 +28,24 @@ export default function UserAvatar({ username, displayName, size = 'md' }: UserA
     sm: 'w-8 h-8 text-sm',
     md: 'w-12 h-12 text-lg',
     lg: 'w-20 h-20 text-3xl'
+  }
+
+  const sizePixels = {
+    sm: 32,
+    md: 48,
+    lg: 80
+  }
+
+  if (avatarUrl) {
+    return (
+      <div className={`${sizeClasses[size]} rounded-full overflow-hidden shrink-0`}>
+        <img
+          src={avatarUrl}
+          alt={name}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      </div>
+    )
   }
 
   return (

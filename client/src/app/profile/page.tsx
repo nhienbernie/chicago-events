@@ -25,7 +25,7 @@ export default function ProfilePage() {
 
       supabase
         .from('users')
-        .select('username, org_url, display_name')
+        .select('username, org_url, display_name, avatar_url')
         .eq('id', session.user.id)
         .single()
         .then(({ data }) => {
@@ -59,6 +59,7 @@ export default function ProfilePage() {
           username={profile?.username}
           displayName={profile?.display_name}
           orgUrl={profile?.org_url}
+          avatarUrl={profile?.avatar_url}
           isOwnProfile={true}
         />
 

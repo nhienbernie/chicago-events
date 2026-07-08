@@ -17,15 +17,16 @@ const s3 = new S3Client({
 // POST /api/upload/presign
 router.post('/presign', async (req, res) => {
   try {
-    const { fileType } = req.body
+    const { fileType, uploadType = 'event' } = req.body
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
     if (!allowedTypes.includes(fileType)) {
       return res.status(400).json({ error: 'Only JPEG, PNG and WebP images are allowed' })
     }
 
+    const folder = uploadType === 'avatar' ? 'avatars' : 'events'
     const extension = fileType.split('/')[1]
-    const key = `events/${randomUUID()}.${extension}`
+    const key = `${folder}/${randomUUID()}.${extension}`
 
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_S3_BUCKET,

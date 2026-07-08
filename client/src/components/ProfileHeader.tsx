@@ -8,16 +8,17 @@ interface ProfileHeaderProps {
   username?: string | null
   displayName?: string | null
   orgUrl?: string | null
+  avatarUrl?: string | null
   isOwnProfile?: boolean
 }
 
-export default function ProfileHeader({ username, displayName, orgUrl, isOwnProfile = false }: ProfileHeaderProps) {
+export default function ProfileHeader({ username, displayName, orgUrl, avatarUrl, isOwnProfile = false }: ProfileHeaderProps) {
   const router = useRouter()
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 flex items-center justify-between">
       <div className="flex items-center gap-4">
-        <UserAvatar username={username} displayName={displayName} size="lg" />
+        <UserAvatar username={username} displayName={displayName} avatarUrl={avatarUrl} size="lg" />
         <div>
           <h1 className="text-xl font-bold text-gray-900">
             {displayName || username || 'Chicago Events User'}
