@@ -12,10 +12,24 @@ export default function ForYou({ user }: { user: any }) {
     console.log('ForYou user:', user)
     if (!user) { setLoading(false); return }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/recommendations/${user.id}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events/recommendations/${user.id}`)
       .then(res => res.json())
       .then(data => {
-        setEvents(data.events || [])
+        const deduplicated = Object.values(
+          (data.events || []).reduce((acc: any, event: any) => {
+            const key = `${event.title}_${event.location_name}`
+            if (!acc[key]) {
+              acc[key] = { ...event, showCount: 1 }
+            } else {
+              acc[key].showCount++
+              if (event.date && new Date(event.date) < new Date(acc[key].date)) {
+                acc[key] = { ...event, showCount: acc[key].showCount }
+              }
+            }
+            return acc
+          }, {})
+        )
+        setEvents(deduplicated as any[])
         setSource(data.source || '')
         setLoading(false)
       })
@@ -48,5 +62,5 @@ export default function ForYou({ user }: { user: any }) {
     </div>
   )
   
+  
 }
-
