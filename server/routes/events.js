@@ -130,7 +130,7 @@ router.get('/recommendations/:userId', async (req, res) => {
         .from('event_popularity')
         .select('event_id, save_count')
         .order('save_count', { ascending: false })
-        .limit(8)
+        .limit(20)
 
       const popularIds = popular?.map(p => p.event_id) || []
 
