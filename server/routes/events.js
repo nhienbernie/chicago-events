@@ -52,6 +52,122 @@ router.get('/', async (req, res) => {
   }
 })
 
+// GET /api/recommendations/:userId
+router.get('/recommendations/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params
+
+    // Step 1 — get user's saved event categories and prices
+    const { data: savedEvents } = await supabase
+      .from('saved_events')
+      .select('events(category, price)')
+      .eq('user_id', userId)
+
+    // Step 2 — get already saved event IDs to exclude
+    const { data: savedIds } = await supabase
+      .from('saved_events')
+      .select('event_id')
+      .eq('user_id', userId)
+
+    const excludeIds = savedIds?.map(s => s.event_id) || []
+
+    let topCategories = []
+    let avgPrice = null
+
+    if (savedEvents && savedEvents.length > 0) {
+      // Derive top categories from save behavior
+      const categoryCounts = {}
+      const prices = []
+
+      savedEvents.forEach(s => {
+        const event = s.events
+        if (!event) return
+        if (event.category) {
+          categoryCounts[event.category] = (categoryCounts[event.category] || 0) + 1
+        }
+        if (event.price) prices.push(event.price)
+      })
+
+      topCategories = Object.entries(categoryCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 2)
+        .map(([cat]) => cat)
+
+      if (prices.length > 0) {
+        avgPrice = prices.reduce((a, b) => a + b, 0) / prices.length
+      }
+    } else {
+      // Fall back to stated preferences
+      const { data: prefs } = await supabase
+        .from('user_preferences')
+        .select('categories, max_price')
+        .eq('user_id', userId)
+        .single()
+
+      if (prefs?.categories?.length > 0) {
+        topCategories = prefs.categories.slice(0, 2)
+      }
+      if (prefs?.max_price) {
+        avgPrice = prefs.max_price
+      }
+    }
+
+    let query = supabase
+      .from('events')
+      .select('*')
+      .gte('date', new Date().toISOString())
+      .order('date', { ascending: true })
+      .limit(8)
+
+    // Exclude already saved events
+    if (excludeIds.length > 0) {
+      query = query.not('id', 'in', `(${excludeIds.join(',')})`)
+    }
+
+    // If no preferences at all — return popular events
+    if (topCategories.length === 0) {
+      const { data: popular } = await supabase
+        .from('event_popularity')
+        .select('event_id, save_count')
+        .order('save_count', { ascending: false })
+        .limit(8)
+
+      const popularIds = popular?.map(p => p.event_id) || []
+
+      if (popularIds.length > 0) {
+        const { data: popularEvents } = await supabase
+          .from('events')
+          .select('*')
+          .in('id', popularIds)
+          .gte('date', new Date().toISOString())
+
+        return res.json({ events: popularEvents || [], source: 'popular' })
+      }
+
+      return res.json({ events: [], source: 'none' })
+    }
+
+    // Filter by top categories
+    query = query.in('category', topCategories)
+
+    const { data, error } = await query
+    if (error) throw error
+
+    // Soft price filter — prefer within range but keep all
+    let results = data || []
+    if (avgPrice) {
+      const inRange = results.filter(e => !e.price || e.price <= avgPrice * 1.5)
+      const outRange = results.filter(e => e.price && e.price > avgPrice * 1.5)
+      results = [...inRange, ...outRange]
+    }
+
+    res.json({ events: results.slice(0, 8), source: 'behavioral' })
+  } catch (err) {
+    console.error('GET /api/recommendations error:', err.message)
+    res.status(500).json({ error: 'Failed to fetch recommendations' })
+  }
+})
+
 // GET /api/events/:id
 router.get('/:id', async (req, res) => {
   try {
@@ -158,6 +274,7 @@ router.get('/my/:userId', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch your events' })
   }
 })
+
 
 
 module.exports = router

@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar'
 import EventCard from '@/components/EventCard'
 import MyEvents from '@/components/MyEvents'
 import { supabase } from '@/lib/supabase'
+import ForYou from '@/components/ForYou'
 
 export default function Home() {
   const [events, setEvents] = useState([])
@@ -141,6 +142,9 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* For You */}
+      <ForYou user={user} />
     </main>
   )
 }
