@@ -127,6 +127,9 @@ export default function Home() {
 
       {/* My Events */}
       <MyEvents user={user} />
+      
+      {/* For You */}
+      <ForYou user={user} />
 
       <div className="max-w-7xl mx-auto px-4 py-4">
         <h2 className="text-2xl font-bold pb-3 border-b-2 border-gray-300 mb-4" style={{ color: '#1A1A2E', fontFamily: 'var(--font-playfair), serif' }}>Explore Events</h2>
@@ -142,9 +145,6 @@ export default function Home() {
           </div>
         )}
       </div>
-
-      {/* For You */}
-      <ForYou user={user} />
     </main>
   )
 }
